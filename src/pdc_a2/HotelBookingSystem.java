@@ -32,7 +32,7 @@ public class HotelBookingSystem extends JFrame {
         setLayout(new BorderLayout());
 
         // background image
-        ImageIcon bgImage = new ImageIcon(getClass().getResource("/pdc_a2/hotel_bg.png"));
+        ImageIcon bgImage = new ImageIcon(getClass().getResource("/resources/hotel_bg.png"));
         backgroundLabel = new JLabel(bgImage);
         backgroundLabel.setLayout(new BorderLayout());
         setContentPane(backgroundLabel);
@@ -54,7 +54,21 @@ public class HotelBookingSystem extends JFrame {
 
         // Add action
         viewRoomsButton.addActionListener(e -> {
-            
+        // Remove background
+        getContentPane().removeAll();
+
+        // Load rooms from file
+        java.util.List<Room> rooms = HotelManager.loadRooms(); // reuse from Assignment1
+
+        // Create the room selection panel
+        RoomCategoryPanel roomCategories = new RoomCategoryPanel(rooms, this);
+
+        // Add new panel
+        setContentPane(roomCategories);
+        
+        //Refresh
+        revalidate();
+        //repaint();
         });
     }
     
