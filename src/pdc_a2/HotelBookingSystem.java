@@ -19,12 +19,12 @@ import javax.swing.SwingConstants;
  *
  * @author 64210
  */
-public class HotelBookingSystem extends JFrame {
+public class HotelView extends JFrame {
     
     private JButton viewRoomsButton;
     private JLabel backgroundLabel;
     
-    public HotelBookingSystem() {
+    public HotelView() {
         setTitle("Hotel Booking System");
         setSize(800, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -51,30 +51,9 @@ public class HotelBookingSystem extends JFrame {
         buttonPanel.setOpaque(false);
         buttonPanel.add(viewRoomsButton);
         backgroundLabel.add(buttonPanel, BorderLayout.SOUTH);
-
-        // Add action
-        viewRoomsButton.addActionListener(e -> {
-        // Remove background
-        getContentPane().removeAll();
-
-        // Load rooms from file
-        java.util.List<Room> rooms = HotelManager.loadRooms(); // reuse from Assignment1
-
-        // Create the room selection panel
-        RoomCategoryPanel roomCategories = new RoomCategoryPanel(rooms, this);
-
-        // Add new panel
-        setContentPane(roomCategories);
-        
-        //Refresh
-        revalidate();
-        //repaint();
-        });
     }
-    
-    
-    public static void main(String[] args) {
-        HotelBookingSystem gui = new HotelBookingSystem();
-        gui.setVisible(true);
+        public void addActionListener(java.awt.event.ActionListener listener) {
+        viewRoomsButton.addActionListener(listener);
     }
+
 }

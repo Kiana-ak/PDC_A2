@@ -22,7 +22,7 @@ public class RoomListPanel extends JPanel{
     private JList<String> roomList;
     private JButton bookButton;
 
-    public RoomListPanel(List<Room> rooms, String imageFile, HotelBookingSystem mainFrame) {
+    public RoomListPanel(List<Room> rooms, String imageFile, HotelView mainFrame) {
         setLayout(new BorderLayout(20, 20));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setBackground(Color.WHITE);

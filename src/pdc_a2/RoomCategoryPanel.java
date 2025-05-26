@@ -24,7 +24,7 @@ import javax.swing.SwingConstants;
  */
 public class RoomCategoryPanel extends JPanel {
     
-    public RoomCategoryPanel(List<Room> allRooms, HotelBookingSystem mainFrame) {
+    public RoomCategoryPanel(List<Room> allRooms, HotelView mainFrame) {
     setLayout(new BorderLayout());
     setBackground(Color.WHITE);
     setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
@@ -47,7 +47,7 @@ public class RoomCategoryPanel extends JPanel {
 }
 
 
-    private JPanel createBedOption(String imageFile, String label, int bedCount, List<Room> allRooms, HotelBookingSystem mainFrame) {
+    private JPanel createBedOption(String imageFile, String label, int bedCount, List<Room> allRooms, HotelView mainFrame) {
         JPanel card = new JPanel();
         card.setLayout(new BorderLayout());
         card.setBackground(Color.LIGHT_GRAY);
