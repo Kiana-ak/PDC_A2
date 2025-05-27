@@ -16,6 +16,8 @@ import javax.swing.JPanel;
 /**
  *
  * @author 64210
+ * Displays list of available rooms
+ * when user selects a room, prompts for their name to confirm booking
  */
 public class RoomListPanel extends JPanel{
     
@@ -23,11 +25,13 @@ public class RoomListPanel extends JPanel{
     private JButton bookButton;
 
     public RoomListPanel(List<Room> rooms, int bedCount, HotelView view) {
+        
+        //Setting layout
         setLayout(new BorderLayout(20, 20));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setBackground(Color.WHITE);
 
-        // LEFT: List of room numbers
+        // List of room numbers in the left
         DefaultListModel<String> listModel = new DefaultListModel<>();
         for (Room room : rooms) {
             listModel.addElement("Room " + room.getRoomNumber());
@@ -38,7 +42,7 @@ public class RoomListPanel extends JPanel{
         listScrollPane.setBorder(BorderFactory.createTitledBorder("Available Rooms"));
         listScrollPane.setPreferredSize(new Dimension(200, 300));
 
-        // RIGHT: Room image
+        // Room image at the right
         JLabel imageLabel;
         try {
             Image img = new ImageIcon(getClass().getResource("/resources/room" + bedCount + ".png")).getImage();
@@ -53,25 +57,40 @@ public class RoomListPanel extends JPanel{
         rightPanel.setBackground(Color.WHITE);
         rightPanel.add(imageLabel, BorderLayout.CENTER);
 
-        // BOTTOM: Book Button
+        // Book Button at bottom
         bookButton = new JButton("Book Selected Room");
         bookButton.setFont(new Font("SansSerif", Font.BOLD, 16));
         bookButton.setEnabled(false); // enable only when a room is selected
-
+        
+        // ask for guest name and confirm booking
         bookButton.addActionListener(e -> {
             String selected = roomList.getSelectedValue();
             if (selected != null) {
                 int roomNumber = Integer.parseInt(selected.split(" ")[1]);
-                JOptionPane.showMessageDialog(this,
-                        "You selected Room " + roomNumber + "\nNext step: show booking form!",
-                        "Booking", JOptionPane.INFORMATION_MESSAGE);
-                // go to booking form
-            }
-        });
 
-        roomList.addListSelectionListener(e -> {
-            bookButton.setEnabled(roomList.getSelectedIndex() != -1);
-        });
+                String guestName = JOptionPane.showInputDialog(
+                    this,
+                    "Enter guest name to confirm booking for Room " + roomNumber + ":",
+                    "Booking Confirmation",
+            JOptionPane.PLAIN_MESSAGE
+        );
+            
+            // check if valid name entered
+            if (guestName != null && !guestName.trim().isEmpty()) {
+                System.out.println("Guest '" + guestName + "' booked Room " + roomNumber);
+            } else {
+                JOptionPane.showMessageDialog(this,
+                    "Booking cancelled or no name entered.",
+                    "Booking Cancelled",
+                JOptionPane.WARNING_MESSAGE);
+            }
+        }
+            
+    });
+
+//        roomList.addListSelectionListener(e -> {
+//            bookButton.setEnabled(roomList.getSelectedIndex() != -1);
+//        });
 
         add(listScrollPane, BorderLayout.WEST);
         add(rightPanel, BorderLayout.CENTER);
