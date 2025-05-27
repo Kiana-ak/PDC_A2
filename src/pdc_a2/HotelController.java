@@ -4,10 +4,26 @@
  */
 package pdc_a2;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 /**
  *
  * @author 64210
  */
-public class HotelController {
-    
+public class HotelController implements ActionListener {
+    private final HotelView view;
+    private final HotelModel model;
+
+    public HotelController(HotelView view, HotelModel model) {
+        this.view = view;
+        this.model = model;
+
+        this.view.addActionListener(this);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        model.loadRoomCategories();
+    }
 }

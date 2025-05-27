@@ -22,7 +22,7 @@ public class RoomListPanel extends JPanel{
     private JList<String> roomList;
     private JButton bookButton;
 
-    public RoomListPanel(List<Room> rooms, String imageFile, HotelView mainFrame) {
+    public RoomListPanel(List<Room> rooms, int bedCount, HotelView view) {
         setLayout(new BorderLayout(20, 20));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setBackground(Color.WHITE);
@@ -41,7 +41,7 @@ public class RoomListPanel extends JPanel{
         // RIGHT: Room image
         JLabel imageLabel;
         try {
-            Image img = new ImageIcon(getClass().getResource("/resources/" + imageFile)).getImage();
+            Image img = new ImageIcon(getClass().getResource("/resources/room" + bedCount + ".png")).getImage();
             Image scaledImg = img.getScaledInstance(250, 200, Image.SCALE_SMOOTH);
             imageLabel = new JLabel(new ImageIcon(scaledImg));
         } catch (Exception e) {

@@ -24,68 +24,61 @@ import javax.swing.SwingConstants;
  */
 public class RoomCategoryPanel extends JPanel {
     
-    public RoomCategoryPanel(List<Room> allRooms, HotelView mainFrame) {
+    public RoomCategoryPanel(HotelModel model) {
     setLayout(new BorderLayout());
     setBackground(Color.WHITE);
     setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 
-    // Top message
     JLabel message = new JLabel("Please select a room type to view available options", SwingConstants.CENTER);
     message.setFont(new Font("SansSerif", Font.BOLD, 16));
     message.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
     add(message, BorderLayout.NORTH);
 
-    // Card row
     JPanel cardRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
     cardRow.setBackground(Color.WHITE);
 
-    cardRow.add(createBedOption("room1.png", "1-Bed Room", 1, allRooms, mainFrame));
-    cardRow.add(createBedOption("room2.png", "2-Bed Room", 2, allRooms, mainFrame));
-    cardRow.add(createBedOption("room3.png", "3-Bed Room", 3, allRooms, mainFrame));
+    cardRow.add(createBedOption("room1.png", "1-Bed Room", 1, model));
+    cardRow.add(createBedOption("room2.png", "2-Bed Room", 2, model));
+    cardRow.add(createBedOption("room3.png", "3-Bed Room", 3, model));
 
     add(cardRow, BorderLayout.CENTER);
 }
 
 
-    private JPanel createBedOption(String imageFile, String label, int bedCount, List<Room> allRooms, HotelView mainFrame) {
-        JPanel card = new JPanel();
-        card.setLayout(new BorderLayout());
-        card.setBackground(Color.LIGHT_GRAY);
-        card.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    private JPanel createBedOption(String imageFile, String label, int bedCount, HotelModel model) {
+    JPanel card = new JPanel();
+    card.setLayout(new BorderLayout());
+    card.setBackground(Color.LIGHT_GRAY);
+    card.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+    card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        // Load and scale image
-        ImageIcon icon;
-        try {
-            Image img = new ImageIcon(getClass().getResource("/resources/" + imageFile)).getImage();
-            Image scaledImg = img.getScaledInstance(200, 150, Image.SCALE_SMOOTH);
-            icon = new ImageIcon(scaledImg);
-        } catch (Exception e) {
-            icon = new ImageIcon();
-            System.err.println("Image not found: " + imageFile);
+    // Load and scale image
+    ImageIcon icon;
+    try {
+        Image img = new ImageIcon(getClass().getResource("/resources/" + imageFile)).getImage();
+        Image scaledImg = img.getScaledInstance(200, 150, Image.SCALE_SMOOTH);
+        icon = new ImageIcon(scaledImg);
+    } catch (Exception e) {
+        icon = new ImageIcon();
+        System.err.println("Image not found: " + imageFile);
+    }
+
+    JLabel imageLabel = new JLabel(icon);
+    imageLabel.setHorizontalAlignment(JLabel.CENTER);
+    card.add(imageLabel, BorderLayout.CENTER);
+
+    JLabel textLabel = new JLabel(label, SwingConstants.CENTER);
+    textLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
+    card.add(textLabel, BorderLayout.SOUTH);
+
+    // Handle click
+    card.addMouseListener(new java.awt.event.MouseAdapter() {
+        @Override
+        public void mouseClicked(java.awt.event.MouseEvent evt) {
+            model.loadAvailableRooms(bedCount);
         }
+    });
 
-        JLabel imageLabel = new JLabel(icon);
-        imageLabel.setHorizontalAlignment(JLabel.CENTER);
-        card.add(imageLabel, BorderLayout.CENTER);
-
-        JLabel textLabel = new JLabel(label, SwingConstants.CENTER);
-        textLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
-        card.add(textLabel, BorderLayout.SOUTH);
-
-        // Action when clicked
-        card.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                List<Room> filtered = allRooms.stream()
-                        .filter(r -> r.getBeds() == bedCount && !r.isBooked())
-                        .collect(Collectors.toList());
-
-                RoomListPanel listPanel = new RoomListPanel(filtered, imageFile, mainFrame);
-                mainFrame.setContentPane(listPanel);
-                mainFrame.revalidate();
-            }
-        });
-
-        return card;
+    return card;
     }
 }

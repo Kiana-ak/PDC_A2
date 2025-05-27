@@ -8,12 +8,10 @@ package pdc_a2;
  *
  * @author 64210
  */
-public class HotelMain {
+public class HotelSetupMain {
     public static void main(String[] args) {
-        HotelView view = new HotelView();
-        HotelModel model = new HotelModel(view);
-        model.setListener(view);
-        HotelController controller = new HotelController(view, model);
-        view.setVisible(true);
+        HotelRoomManager manager = new HotelRoomManager();
+        manager.setupHotelDB();         //create the HotelDB and ROOMS table
+        manager.closeConnection();      //close the DB
     }
 }
