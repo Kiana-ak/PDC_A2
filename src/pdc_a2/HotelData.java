@@ -9,6 +9,7 @@ package pdc_a2;
  * @author 64210
  */
 public class HotelData {
+
     public int roomNumber;
     public int beds;
     public boolean booked = false;

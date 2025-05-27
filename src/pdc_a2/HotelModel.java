@@ -9,46 +9,52 @@ import java.util.stream.Collectors;
 
 /**
  *
- * @author 64210
+ * @author 64210 HotelModel connects to the database, filter rooms by bed count
+ * stores selected booking data and notifies the view, HotelListener
  */
 public class HotelModel {
+
     private HotelListener listener;
     private HotelData data;
     private RoomDatabase roomDatabase;
     private HotelView view;
 
+    // set up the model with refrence to the view
     public HotelModel(HotelView view) {
-        this.view=view;
+        this.view = view;
         this.roomDatabase = new RoomDatabase();
         this.data = new HotelData();
     }
 
+    // let the view listen for updates
     public void setListener(HotelListener listener) {
         this.listener = listener;
     }
 
+    //tell the view model has updated data
     private void notifyListener() {
         if (listener != null) {
             listener.hotelUpdate(this.data);
         }
     }
 
-public void loadRoomCategories() {
-    // Create a new panel that shows 1-bed, 2-bed, 3-bed options
-    RoomCategoryPanel categoryPanel = new RoomCategoryPanel(this);
-    view.setContentPane(categoryPanel);
-    view.revalidate();
-}
+    // show 1 to 3 beds options in panel
+    public void loadRoomCategories() {
+        // Create a new panel that shows 1-bed, 2-bed, 3-bed options
+        RoomCategoryPanel categoryPanel = new RoomCategoryPanel(this);
+        view.setContentPane(categoryPanel);
+        view.revalidate();
+    }
 
-public void loadAvailableRooms(int bedCount) {
-    List<Room> filteredRooms = roomDatabase.getAvailableRooms().stream()
-        .filter(r -> r.getBeds() == bedCount && !r.isBooked())
-        .collect(Collectors.toList());
+    //show rooms
+    public void loadAvailableRooms(int bedCount) {
+        List<Room> filteredRooms = roomDatabase.getAvailableRooms().stream()
+                .filter(r -> r.getBeds() == bedCount && !r.isBooked())
+                .collect(Collectors.toList());
 
-    RoomListPanel listPanel = new RoomListPanel(filteredRooms, bedCount, view);
-    view.setContentPane(listPanel);
-    view.revalidate();
-}
+        RoomListPanel listPanel = new RoomListPanel(filteredRooms, bedCount, view);
+        view.setContentPane(listPanel);
+        view.revalidate();
+    }
 
-    
 }

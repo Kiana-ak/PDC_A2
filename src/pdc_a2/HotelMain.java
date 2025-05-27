@@ -9,6 +9,7 @@ package pdc_a2;
  * @author 64210
  */
 public class HotelMain {
+
     public static void main(String[] args) {
         HotelView view = new HotelView();
         HotelModel model = new HotelModel(view);

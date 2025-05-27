@@ -9,6 +9,7 @@ package pdc_a2;
  * @author 64210
  */
 public class HotelSetupMain {
+
     public static void main(String[] args) {
         HotelRoomManager manager = new HotelRoomManager();
         manager.setupHotelDB();         //create the HotelDB and ROOMS table

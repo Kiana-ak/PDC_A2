@@ -19,8 +19,8 @@ import javax.swing.JPanel;
  *
  * @author 64210
  */
-public class SelectRoom extends JPanel{
-    
+public class SelectRoom extends JPanel {
+
     public SelectRoom(List<Room> rooms) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(Color.WHITE);
@@ -45,9 +45,9 @@ public class SelectRoom extends JPanel{
         panel.add(imageLabel, BorderLayout.WEST);
 
         // Room info
-        JLabel info = new JLabel("Room " + room.getRoomNumber() +
-                " | Beds: " + room.getBeds() +
-                " | Price: $" + room.getPrice());
+        JLabel info = new JLabel("Room " + room.getRoomNumber()
+                + " | Beds: " + room.getBeds()
+                + " | Price: $" + room.getPrice());
         panel.add(info, BorderLayout.CENTER);
 
         // Book button

@@ -13,7 +13,7 @@ import java.awt.event.ActionListener;
  * @author 64210
  */
 public class HotelView extends JFrame implements HotelListener {
-    
+
     private JButton viewRoomsButton;
     private JLabel backgroundLabel;
     private JLabel welcomeLabel;
@@ -58,6 +58,6 @@ public class HotelView extends JFrame implements HotelListener {
     @Override
     public void hotelUpdate(HotelData data) {
         JOptionPane.showMessageDialog(this,
-            "You selected: " + data.beds + " bed(s), Room #" + data.roomNumber);
+                "You selected: " + data.beds + " bed(s), Room #" + data.roomNumber);
     }
 }

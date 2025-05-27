@@ -9,5 +9,6 @@ package pdc_a2;
  * @author 64210
  */
 public interface HotelListener {
+
     public void hotelUpdate(HotelData data);
 }

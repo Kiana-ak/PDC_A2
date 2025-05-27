@@ -15,6 +15,7 @@ import java.sql.Statement;
  * @author 64210
  */
 public class HotelRoomManager {
+
     private final DBManager dbManager;
     private final Connection conn;
     private Statement statement;

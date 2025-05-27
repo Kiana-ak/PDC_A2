@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
  * @author 64210
  */
 public class HotelController implements ActionListener {
+
     private final HotelView view;
     private final HotelModel model;
 

@@ -16,6 +16,7 @@ import java.util.List;
  * @author 64210
  */
 public class RoomDatabase {
+
     private final DBManager dbManager;
     private final Connection conn;
 
@@ -48,6 +49,19 @@ public class RoomDatabase {
         }
 
         return rooms;
+    }
+
+    // mark selected room as booked in database
+    public void bookRoom(int roomNumber) {
+        try {
+            Statement statement = conn.createStatement();
+            String sql = "UPDATE ROOMS SET BOOKED = TRUE WHERE ROOMNUMBER = " + roomNumber;
+            statement.executeUpdate(sql);
+            statement.close();
+            System.out.println("Room " + roomNumber + " marked as booked in the database.");
+        } catch (SQLException ex) {
+            System.out.println("Error booking room: " + ex.getMessage());
+        }
     }
 
     public void closeConnection() {
