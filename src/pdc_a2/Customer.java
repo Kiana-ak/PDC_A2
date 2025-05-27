@@ -8,11 +8,16 @@ package pdc_a2;
  *
  * @author 64210
  */
-public class HotelMain {
-
-    public static void main(String[] args) {
-        HotelView view = new HotelView();
-        view.setContentPane(new LoginPanel(view));
-        view.setVisible(true);
+public class Customer extends Person {
+    
+    public Customer(String name) {
+        super(name);
     }
+
+    // OOP: polymorphism – overrides abstract method
+    @Override
+    public String getRole() {
+        return "Guest";
+    }
+    
 }

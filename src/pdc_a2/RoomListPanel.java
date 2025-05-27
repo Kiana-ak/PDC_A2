@@ -7,41 +7,62 @@ package pdc_a2;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.JPanel;
 
 /**
  *
- * @author 64210 Displays list of available rooms when user selects a room,
+ * @author 64210 
+ * Displays list of available rooms when user selects a room,
  * prompts for their name to confirm booking
  */
 public class RoomListPanel extends JPanel {
 
     private JList<String> roomList;
     private JButton bookButton;
+    private HotelView view;
+    private int bedCount;
+    private List<Room> rooms;
 
     public RoomListPanel(List<Room> rooms, int bedCount, HotelView view) {
+        this.rooms = rooms;
+        this.view = view;
+        this.bedCount = bedCount;
 
-        //Setting layout
         setLayout(new BorderLayout(20, 20));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setBackground(Color.WHITE);
 
-        // List of room numbers in the left
+        add(initRoomListPanel(), BorderLayout.WEST);
+        add(initImagePanel(), BorderLayout.CENTER);
+        add(initBottomPanel(), BorderLayout.SOUTH);
+    }
+    
+    //scrollable room list
+    private JScrollPane initRoomListPanel() {
         DefaultListModel<String> listModel = new DefaultListModel<>();
         for (Room room : rooms) {
             listModel.addElement("Room " + room.getRoomNumber());
         }
+
         roomList = new JList<>(listModel);
         roomList.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        JScrollPane listScrollPane = new JScrollPane(roomList);
-        listScrollPane.setBorder(BorderFactory.createTitledBorder("Available Rooms"));
-        listScrollPane.setPreferredSize(new Dimension(200, 300));
+        JScrollPane scrollPane = new JScrollPane(roomList);
+        scrollPane.setBorder(BorderFactory.createTitledBorder("Available Rooms"));
+        scrollPane.setPreferredSize(new Dimension(200, 300));
 
-        // Room image at the right
+        return scrollPane;
+    }
+    
+    //Show an image of the selected room type
+    private JPanel initImagePanel() {
         JLabel imageLabel;
         try {
             Image img = new ImageIcon(getClass().getResource("/resources/room" + bedCount + ".png")).getImage();
@@ -49,59 +70,110 @@ public class RoomListPanel extends JPanel {
             imageLabel = new JLabel(new ImageIcon(scaledImg));
         } catch (Exception e) {
             imageLabel = new JLabel("Image not found");
-            imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         }
 
-        JPanel rightPanel = new JPanel(new BorderLayout());
-        rightPanel.setBackground(Color.WHITE);
-        rightPanel.add(imageLabel, BorderLayout.CENTER);
-
-        // Book Button at bottom
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.add(imageLabel, BorderLayout.CENTER);
+        return panel;
+    }
+    
+    //booking button panel and action listeners
+    private JPanel initBottomPanel() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         bookButton = new JButton("Book Selected Room");
-        bookButton.setFont(new Font("SansSerif", Font.BOLD, 16));
-        bookButton.setEnabled(false); // enable only when a room is selected
+        bookButton.setEnabled(false);
 
-        // Enable book button if a room is selected
         roomList.addListSelectionListener(e -> {
             bookButton.setEnabled(roomList.getSelectedIndex() != -1);
         });
 
-        // ask for guest name and confirm booking
-        bookButton.addActionListener(e -> {
-            String selected = roomList.getSelectedValue();
-            if (selected != null) {
-                int roomNumber = Integer.parseInt(selected.split(" ")[1]);
+        bookButton.addActionListener(e -> handleBooking());
 
-                String guestName = JOptionPane.showInputDialog(
-                        this,
-                        "Enter guest name to confirm booking for Room " + roomNumber + ":",
-                        "Booking Confirmation",
-                        JOptionPane.PLAIN_MESSAGE
-                );
+        panel.add(bookButton);
+        return panel;
+    }
+    
+    //Handle the booking process when user clicks Book
+    private void handleBooking() {
+        String selected = roomList.getSelectedValue();
+        if (selected != null) {
+            int roomNumber = Integer.parseInt(selected.split(" ")[1]);
+            String guestName = promptForGuestName(roomNumber);
 
-                // check if valid name entered
-                if (guestName != null && !guestName.trim().isEmpty()) {
-                    //update database
-                    RoomDatabase roomDatabase = new RoomDatabase();
-                    roomDatabase.bookRoom(roomNumber);
+            if (guestName != null && !guestName.trim().isEmpty()) {
+                Room bookedRoom = new Room(roomNumber, bedCount);
+                Person guest = new Customer(guestName);
 
-                    // confirm message
-                    JOptionPane.showMessageDialog(this,
-                        "Booking confirmed for " + guestName + " in Room " + roomNumber,
-                        "Success", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(this,
-                            "Booking cancelled or no name entered.",
-                            "Booking Cancelled",
-                            JOptionPane.WARNING_MESSAGE);
+                updateDatabase(roomNumber);
+                showInvoicePreview(guest, bookedRoom);
+                refreshRoomList();
+            }
+        }
+    }
+    
+    //Asks the user to input their name to confirm booking
+    private String promptForGuestName(int roomNumber) {
+        return JOptionPane.showInputDialog(
+                this,
+                "Enter guest name to confirm booking for Room " + roomNumber + ":",
+                "Booking Confirmation",
+                JOptionPane.PLAIN_MESSAGE
+        );
+    }
+    
+    // Update the room in the database to set BOOKED = TRUE
+    private void updateDatabase(int roomNumber) {
+        RoomDatabase roomDatabase = new RoomDatabase();
+        roomDatabase.bookRoom(roomNumber);
+    }
+    
+    //Shows the invoice in a preview dialog and lets the user save it
+    private void showInvoicePreview(Person guest, Room room) {
+        String invoiceText = "Hotel Booking Invoice\n"
+                + "----------------------\n"
+                + "Customer: " + guest.getName() + "\n"
+                + "Role: " + guest.getRole() + "\n"
+                + "Room Number: " + room.getRoomNumber() + "\n"
+                + "Beds: " + room.getBeds() + "\n"
+                + "Price: $" + room.getPrice() + "\n\n"
+                + "Thank you for booking with us!";
+
+        JTextArea invoiceArea = new JTextArea(invoiceText);
+        invoiceArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        invoiceArea.setEditable(false);
+
+        JScrollPane scrollPane = new JScrollPane(invoiceArea);
+        scrollPane.setPreferredSize(new Dimension(400, 300));
+
+        JButton saveButton = new JButton("Save Invoice");
+
+        saveButton.addActionListener(event -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Save Invoice");
+            fileChooser.setSelectedFile(new java.io.File("invoice_" + guest.getName().replaceAll(" ", "_") + ".txt"));
+
+            int option = fileChooser.showSaveDialog(this);
+            if (option == JFileChooser.APPROVE_OPTION) {
+                try (PrintWriter writer = new PrintWriter(new FileWriter(fileChooser.getSelectedFile()))) {
+                    writer.print(invoiceText);
+                    JOptionPane.showMessageDialog(this, "Invoice saved successfully!");
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, "Error saving invoice: " + ex.getMessage());
                 }
             }
-
         });
 
-        // Add all components to panel
-        add(listScrollPane, BorderLayout.WEST);
-        add(rightPanel, BorderLayout.CENTER);
-        add(bookButton, BorderLayout.SOUTH);
+        JPanel previewPanel = new JPanel(new BorderLayout());
+        previewPanel.add(scrollPane, BorderLayout.CENTER);
+        previewPanel.add(saveButton, BorderLayout.SOUTH);
+
+        JOptionPane.showMessageDialog(this, previewPanel, "Invoice Preview", JOptionPane.PLAIN_MESSAGE);
+    }
+    
+    //Reloads the room list to reflect changes after booking
+    private void refreshRoomList() {
+        HotelModel model = new HotelModel(view);
+        model.loadAvailableRooms(bedCount);
     }
 }

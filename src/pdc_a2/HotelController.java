@@ -19,8 +19,6 @@ public class HotelController implements ActionListener {
     public HotelController(HotelView view, HotelModel model) {
         this.view = view;
         this.model = model;
-
-        this.view.addActionListener(this);
     }
 
     @Override

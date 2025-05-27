@@ -11,8 +11,15 @@ package pdc_a2;
 public class HotelSetupMain {
 
     public static void main(String[] args) {
+        
+        // rooms
         HotelRoomManager manager = new HotelRoomManager();
         manager.setupHotelDB();         //create the HotelDB and ROOMS table
         manager.closeConnection();      //close the DB
+        
+        // user
+        UserDatabase userDb = new UserDatabase();
+        userDb.setupUsersTable();
+    
     }
 }

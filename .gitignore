@@ -130,3 +130,6 @@ derby.log
 
 # idea
 .idea
+
+# Ignore Derby Embedded Database Files
+HotelDB/

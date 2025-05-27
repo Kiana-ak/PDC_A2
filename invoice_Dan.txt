@@ -1,0 +1,9 @@
+Hotel Booking Invoice
+----------------------
+Customer: Dan
+Role: Guest
+Room Number: 102
+Beds: 1
+Price: $75.0
+
+Thank you for booking with us!

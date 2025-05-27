@@ -14,7 +14,7 @@ import java.sql.SQLException;
  */
 public class DBManager {
 
-    private static final String URL = "jdbc:derby://localhost:1527/HotelDB;create=true";  // URL of the DB host
+    private static final String URL = "jdbc:derby:HotelDB;create=true";  // URL of the DB host
     private static final String USER_NAME = "pdc"; // username
     private static final String PASSWORD = "pdc"; // password
 
