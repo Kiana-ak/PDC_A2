@@ -52,17 +52,20 @@ public class RoomDatabase {
     }
 
     // mark selected room as booked in database
-    public void bookRoom(int roomNumber) {
+    public void bookRoom(int roomNumber, String guestName) {
         try {
             Statement statement = conn.createStatement();
-            String sql = "UPDATE ROOMS SET BOOKED = TRUE WHERE ROOMNUMBER = " + roomNumber;
+            String sql = "UPDATE ROOMS SET BOOKED = TRUE, GUESTNAME = '" + guestName + "' "
+                    + "WHERE ROOMNUMBER = " + roomNumber;
             statement.executeUpdate(sql);
             statement.close();
-            System.out.println("Room " + roomNumber + " marked as booked in the database.");
+            System.out.println("Room " + roomNumber + " booked by " + guestName);
         } catch (SQLException ex) {
             System.out.println("Error booking room: " + ex.getMessage());
         }
     }
+    
+    
 
     public void closeConnection() {
         dbManager.closeConnection();

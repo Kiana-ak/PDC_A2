@@ -105,7 +105,7 @@ public class RoomListPanel extends JPanel {
                 Room bookedRoom = new Room(roomNumber, bedCount);
                 Person guest = new Customer(guestName);
 
-                updateDatabase(roomNumber);
+                updateDatabase(roomNumber, guestName);
                 showInvoicePreview(guest, bookedRoom);
                 refreshRoomList();
             }
@@ -123,9 +123,9 @@ public class RoomListPanel extends JPanel {
     }
     
     // Update the room in the database to set BOOKED = TRUE
-    private void updateDatabase(int roomNumber) {
+    private void updateDatabase(int roomNumber, String guestName) {
         RoomDatabase roomDatabase = new RoomDatabase();
-        roomDatabase.bookRoom(roomNumber);
+        roomDatabase.bookRoom(roomNumber, guestName);
     }
     
     //Shows the invoice in a preview dialog and lets the user save it
