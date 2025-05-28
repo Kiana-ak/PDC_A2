@@ -52,6 +52,46 @@ public class RoomDatabase {
     }
 
     // mark selected room as booked in database
+    public List<Room> getBookingsForGuest(String guestName) {
+        guestName = guestName.trim().toLowerCase();
+        List<Room> rooms = new ArrayList<>();
+        try {
+            Statement statement = conn.createStatement();
+            String sql = "SELECT * FROM ROOMS WHERE BOOKED = TRUE AND LOWER(GUESTNAME) = '" + guestName + "'";
+            ResultSet rs = statement.executeQuery(sql);
+
+            while (rs.next()) {
+                int roomNumber = rs.getInt("ROOMNUMBER");
+                int beds = rs.getInt("BEDS");
+                boolean booked = rs.getBoolean("BOOKED");
+                Room room = new Room(roomNumber, beds);
+                room.setBooked(booked);
+                room.setGuestName(guestName);
+                rooms.add(room);
+                System.out.println("Found booking: " + roomNumber + " for " + guestName);
+
+            }
+
+            rs.close();
+            statement.close();
+        } catch (SQLException ex) {
+            System.out.println("Error retrieving bookings: " + ex.getMessage());
+        }
+        return rooms;
+    }
+
+    //cancel booking
+    public void cancelBooking(int roomNumber) {
+        try {
+            Statement stmt = conn.createStatement();
+            String sql = "UPDATE ROOMS SET BOOKED = FALSE, GUESTNAME = NULL WHERE ROOMNUMBER = " + roomNumber;
+            stmt.executeUpdate(sql);
+            stmt.close();
+        } catch (SQLException ex) {
+            System.out.println("❌ Error canceling booking: " + ex.getMessage());
+        }
+    }
+
     public void bookRoom(int roomNumber, String guestName) {
         try {
             Statement statement = conn.createStatement();
@@ -64,8 +104,32 @@ public class RoomDatabase {
             System.out.println("Error booking room: " + ex.getMessage());
         }
     }
-    
-    
+
+    public List<Room> getAllRooms() {
+        List<Room> rooms = new ArrayList<>();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM ROOMS");
+
+            while (rs.next()) {
+                int roomNumber = rs.getInt("ROOMNUMBER");
+                int beds = rs.getInt("BEDS");
+                boolean booked = rs.getBoolean("BOOKED");
+                String guestName = rs.getString("GUESTNAME");
+
+                Room room = new Room(roomNumber, beds);
+                room.setBooked(booked);
+                room.setGuestName(guestName); // ✅
+                rooms.add(room);
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (SQLException ex) {
+            System.out.println("Error reading all rooms: " + ex.getMessage());
+        }
+        return rooms;
+    }
 
     public void closeConnection() {
         dbManager.closeConnection();

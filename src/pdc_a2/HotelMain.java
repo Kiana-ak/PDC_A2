@@ -12,7 +12,10 @@ public class HotelMain {
 
     public static void main(String[] args) {
         HotelView view = new HotelView();
-        view.setContentPane(new LoginPanel(view));
+        HotelModel model = new HotelModel(view);
+        HotelController controller = new HotelController(view, model);
+
+        view.addActionListener(controller);
         view.setVisible(true);
     }
 }

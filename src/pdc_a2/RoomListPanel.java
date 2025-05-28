@@ -19,8 +19,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author 64210 
- * Displays list of available rooms when user selects a room,
+ * @author 64210 Displays list of available rooms when user selects a room,
  * prompts for their name to confirm booking
  */
 public class RoomListPanel extends JPanel {
@@ -30,8 +29,9 @@ public class RoomListPanel extends JPanel {
     private HotelView view;
     private int bedCount;
     private List<Room> rooms;
+    private String guestName;
 
-    public RoomListPanel(List<Room> rooms, int bedCount, HotelView view) {
+    public RoomListPanel(List<Room> rooms, int bedCount, String guestName, HotelView view) {
         this.rooms = rooms;
         this.view = view;
         this.bedCount = bedCount;
@@ -44,15 +44,21 @@ public class RoomListPanel extends JPanel {
         add(initImagePanel(), BorderLayout.CENTER);
         add(initBottomPanel(), BorderLayout.SOUTH);
     }
-    
+
     //scrollable room list
     private JScrollPane initRoomListPanel() {
         DefaultListModel<String> listModel = new DefaultListModel<>();
         for (Room room : rooms) {
-            listModel.addElement("Room " + room.getRoomNumber());
+            String status = room.isBooked() ? "(Booked)" : "";
+            listModel.addElement("Room " + room.getRoomNumber() + " " + status);
         }
 
+        // Enable book button when a room is selected
         roomList = new JList<>(listModel);
+        roomList.addListSelectionListener(e -> {
+            bookButton.setEnabled(roomList.getSelectedIndex() != -1);
+        });
+
         roomList.setFont(new Font("SansSerif", Font.PLAIN, 16));
         JScrollPane scrollPane = new JScrollPane(roomList);
         scrollPane.setBorder(BorderFactory.createTitledBorder("Available Rooms"));
@@ -60,7 +66,7 @@ public class RoomListPanel extends JPanel {
 
         return scrollPane;
     }
-    
+
     //Show an image of the selected room type
     private JPanel initImagePanel() {
         JLabel imageLabel;
@@ -77,23 +83,21 @@ public class RoomListPanel extends JPanel {
         panel.add(imageLabel, BorderLayout.CENTER);
         return panel;
     }
-    
+
     //booking button panel and action listeners
     private JPanel initBottomPanel() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         bookButton = new JButton("Book Selected Room");
-        bookButton.setEnabled(false);
-
-        roomList.addListSelectionListener(e -> {
-            bookButton.setEnabled(roomList.getSelectedIndex() != -1);
-        });
+        bookButton.setFont(new Font("SansSerif", Font.BOLD, 16));
+        bookButton.setEnabled(false); // enable only when a room is selected
 
         bookButton.addActionListener(e -> handleBooking());
+        bottomPanel.add(bookButton);
+        bottomPanel.add(createBackButton());
 
-        panel.add(bookButton);
-        return panel;
+        return bottomPanel;
     }
-    
+
     //Handle the booking process when user clicks Book
     private void handleBooking() {
         String selected = roomList.getSelectedValue();
@@ -102,16 +106,21 @@ public class RoomListPanel extends JPanel {
             String guestName = promptForGuestName(roomNumber);
 
             if (guestName != null && !guestName.trim().isEmpty()) {
+
+                this.guestName = guestName.trim();
                 Room bookedRoom = new Room(roomNumber, bedCount);
                 Person guest = new Customer(guestName);
 
                 updateDatabase(roomNumber, guestName);
                 showInvoicePreview(guest, bookedRoom);
-                refreshRoomList();
+                refreshRoomList(guest.getName());
+            } else if (guestName == null || guestName.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid name to proceed.");
+                return;
             }
         }
     }
-    
+
     //Asks the user to input their name to confirm booking
     private String promptForGuestName(int roomNumber) {
         return JOptionPane.showInputDialog(
@@ -121,13 +130,13 @@ public class RoomListPanel extends JPanel {
                 JOptionPane.PLAIN_MESSAGE
         );
     }
-    
+
     // Update the room in the database to set BOOKED = TRUE
     private void updateDatabase(int roomNumber, String guestName) {
         RoomDatabase roomDatabase = new RoomDatabase();
         roomDatabase.bookRoom(roomNumber, guestName);
     }
-    
+
     //Shows the invoice in a preview dialog and lets the user save it
     private void showInvoicePreview(Person guest, Room room) {
         String invoiceText = "Hotel Booking Invoice\n"
@@ -170,10 +179,20 @@ public class RoomListPanel extends JPanel {
 
         JOptionPane.showMessageDialog(this, previewPanel, "Invoice Preview", JOptionPane.PLAIN_MESSAGE);
     }
-    
+
+    private JButton createBackButton() {
+        JButton backButton = new JButton("Back");
+        backButton.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        backButton.addActionListener(e -> {
+            HotelModel model = new HotelModel(view);
+            model.loadRoomCategories(guestName);
+        });
+        return backButton;
+    }
+
     //Reloads the room list to reflect changes after booking
-    private void refreshRoomList() {
+    private void refreshRoomList(String guestName) {
         HotelModel model = new HotelModel(view);
-        model.loadAvailableRooms(bedCount);
+        model.loadAvailableRooms(bedCount, guestName);
     }
 }

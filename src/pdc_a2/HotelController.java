@@ -6,6 +6,7 @@ package pdc_a2;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JButton;
 
 /**
  *
@@ -23,6 +24,15 @@ public class HotelController implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        model.loadRoomCategories();
+        JButton source = (JButton) e.getSource();
+        String buttonText = source.getText().trim();
+
+        if (buttonText.equalsIgnoreCase("View Available Rooms")) {
+            model.loadRoomCategories("Guest");
+        } else if (buttonText.equals("Receptionist Login")) {
+            view.setContentPane(new LoginPanel(view));
+            view.revalidate();
+        }
     }
+
 }

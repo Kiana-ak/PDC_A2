@@ -11,6 +11,7 @@ import java.sql.*;
  * @author 64210
  */
 public class UserDatabase {
+
     private final DBManager dbManager;
     private final Connection conn;
 
@@ -20,7 +21,6 @@ public class UserDatabase {
     }
 
     //Creates the USERS table if it doesn't exist.
-    
     public void setupUsersTable() {
         try {
             Statement stmt = conn.createStatement();
@@ -28,23 +28,29 @@ public class UserDatabase {
             ResultSet rs = dbmd.getTables(null, null, "USERS", null);
 
             if (!rs.next()) {
+                // Table doesn't exist — create and insert admin
                 stmt.executeUpdate("CREATE TABLE USERS ("
                         + "USERNAME VARCHAR(20), "
                         + "PASSWORD VARCHAR(20), "
                         + "ROLE VARCHAR(15))");
-
-                // Seed receptionist
                 stmt.executeUpdate("INSERT INTO USERS VALUES ('admin', 'admin123', 'receptionist')");
+            } else {
+                // Table exists — ensure admin is present
+                ResultSet checkAdmin = stmt.executeQuery("SELECT * FROM USERS WHERE USERNAME='admin'");
+                if (!checkAdmin.next()) {
+                    stmt.executeUpdate("INSERT INTO USERS VALUES ('admin', 'admin123', 'receptionist')");
+                }
+                checkAdmin.close();
             }
+
             rs.close();
             stmt.close();
         } catch (SQLException ex) {
-            System.out.println("Error creating USERS table: " + ex.getMessage());
+            System.out.println("Error creating or updating USERS table: " + ex.getMessage());
         }
     }
 
     //Validates login and returns role if correct, null otherwise.
-    
     public String checkLogin(String username, String password) {
         try {
             Statement stmt = conn.createStatement();
@@ -60,7 +66,6 @@ public class UserDatabase {
     }
 
     //Creates a new guest user (only guests can sign up).
-    
     public boolean createUser(String username, String password) {
         try {
             Statement stmt = conn.createStatement();

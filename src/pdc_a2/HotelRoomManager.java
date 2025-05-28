@@ -26,24 +26,32 @@ public class HotelRoomManager {
     }
 
     public void setupHotelDB() {
-        try {
-            this.statement = conn.createStatement();
-            this.checkIfExists("ROOMS");
+    try {
+        this.statement = conn.createStatement();
+        this.checkIfExists("ROOMS");
 
-            this.statement.addBatch("CREATE TABLE ROOMS (ROOMNUMBER INT, BEDS INT, BOOKED BOOLEAN)");
-            this.statement.addBatch("INSERT INTO ROOMS VALUES (101, 1, false)");
-            this.statement.addBatch("INSERT INTO ROOMS VALUES (102, 1, false)");
-            this.statement.addBatch("INSERT INTO ROOMS VALUES (201, 2, false)");
-            this.statement.addBatch("INSERT INTO ROOMS VALUES (202, 2, false)");
-            this.statement.addBatch("INSERT INTO ROOMS VALUES (301, 3, false)");
-            this.statement.addBatch("INSERT INTO ROOMS VALUES (302, 3, false)");
+        // Create ROOMS table with GUESTNAME column
+        this.statement.addBatch("CREATE TABLE ROOMS (" +
+                "ROOMNUMBER INT, " +
+                "BEDS INT, " +
+                "BOOKED BOOLEAN, " +
+                "GUESTNAME VARCHAR(100))");
 
-            this.statement.executeBatch();
+        // Insert sample rooms with null guest names
+        this.statement.addBatch("INSERT INTO ROOMS VALUES (101, 1, false, NULL)");
+        this.statement.addBatch("INSERT INTO ROOMS VALUES (102, 1, false, NULL)");
+        this.statement.addBatch("INSERT INTO ROOMS VALUES (201, 2, false, NULL)");
+        this.statement.addBatch("INSERT INTO ROOMS VALUES (202, 2, false, NULL)");
+        this.statement.addBatch("INSERT INTO ROOMS VALUES (301, 3, false, NULL)");
+        this.statement.addBatch("INSERT INTO ROOMS VALUES (302, 3, false, NULL)");
 
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
+        this.statement.executeBatch();
+        System.out.println("ROOMS table created with GUESTNAME column.");
+    } catch (SQLException ex) {
+        System.out.println("Error setting up DB: " + ex.getMessage());
     }
+}
+
 
     private void checkIfExists(String name) {
         try {

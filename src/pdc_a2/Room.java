@@ -13,11 +13,20 @@ public class Room {
     private int roomNumber;
     private int beds;
     private boolean isBooked;
+    private String guestName;
 
     public Room(int roomNumber, int beds) {
         this.roomNumber = roomNumber;
         this.beds = beds;
         this.isBooked = false;
+    }
+
+    public String getGuestName() {
+        return guestName;
+    }
+
+    public void setGuestName(String guestName) {
+        this.guestName = guestName;
     }
 
     public int getRoomNumber() {

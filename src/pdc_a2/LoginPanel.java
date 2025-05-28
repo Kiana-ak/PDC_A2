@@ -12,6 +12,7 @@ import java.awt.*;
  * @author 64210
  */
 public class LoginPanel extends JPanel {
+
     private JTextField usernameField;
     private JPasswordField passwordField;
     private HotelView view;
@@ -34,23 +35,43 @@ public class LoginPanel extends JPanel {
 
         JButton loginButton = new JButton("Login");
         JButton signUpButton = new JButton("Sign Up");
+        //bach button
+        JButton backButton = new JButton("Back to Main Menu");
+        backButton.addActionListener(e -> {
+            HotelView newView = new HotelView();
+            HotelModel model = new HotelModel(newView);
+            HotelController controller = new HotelController(newView, model);
+            newView.addActionListener(controller);
+            newView.setVisible(true);
+            SwingUtilities.getWindowAncestor(this).dispose(); // close login window
+        });
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 2;
+        add(backButton, gbc);
 
         gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
         add(title, gbc);
 
         gbc.gridwidth = 1;
-        gbc.gridx = 0; gbc.gridy = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         add(userLabel, gbc);
         gbc.gridx = 1;
         add(usernameField, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
         add(passLabel, gbc);
         gbc.gridx = 1;
         add(passwordField, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 3;
+        gbc.gridx = 0;
+        gbc.gridy = 3;
         add(loginButton, gbc);
         gbc.gridx = 1;
         add(signUpButton, gbc);
@@ -66,15 +87,18 @@ public class LoginPanel extends JPanel {
         UserDatabase db = new UserDatabase();
         String role = db.checkLogin(username, password);
 
-        if (role == null) {
-            JOptionPane.showMessageDialog(this, "Invalid credentials!", "Login Failed", JOptionPane.ERROR_MESSAGE);
-        } else if (role.equalsIgnoreCase("guest")) {
-            // Logged in as guest
-            HotelModel model = new HotelModel(view);
-            model.loadRoomCategories();
-        } else if (role.equalsIgnoreCase("receptionist")) {
-            
+        if (role == null || !role.equalsIgnoreCase("receptionist")) {
+            JOptionPane.showMessageDialog(this, "Only receptionist login is allowed.", "Login Failed", JOptionPane.ERROR_MESSAGE);
+            return;
         }
+
+        // Logged in as receptionist
+        JOptionPane.showMessageDialog(this, "Login successful. Welcome, receptionist!");
+
+        //open a bookings view or new panel
+        ReceptionistPanel receptionistPanel = new ReceptionistPanel();
+        view.setContentPane(receptionistPanel);
+        view.revalidate();
     }
 
     private void handleSignUp() {

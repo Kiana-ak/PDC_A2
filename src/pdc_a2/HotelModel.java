@@ -18,12 +18,18 @@ public class HotelModel {
     private HotelData data;
     private RoomDatabase roomDatabase;
     private HotelView view;
+    private String guestName;
+
 
     // set up the model with refrence to the view
     public HotelModel(HotelView view) {
         this.view = view;
         this.roomDatabase = new RoomDatabase();
         this.data = new HotelData();
+    }
+
+    public String getGuestName() {
+        return this.guestName;
     }
 
     // let the view listen for updates
@@ -39,22 +45,27 @@ public class HotelModel {
     }
 
     // show 1 to 3 beds options in panel
-    public void loadRoomCategories() {
+    public void loadRoomCategories(String guestName) {
         // Create a new panel that shows 1-bed, 2-bed, 3-bed options
-        RoomCategoryPanel categoryPanel = new RoomCategoryPanel(this);
+        this.guestName = guestName;
+        RoomCategoryPanel categoryPanel = new RoomCategoryPanel(this, guestName);
         view.setContentPane(categoryPanel);
         view.revalidate();
     }
 
     //show rooms
-    public void loadAvailableRooms(int bedCount) {
+    public void loadAvailableRooms(int bedCount, String guestName) {
         List<Room> filteredRooms = roomDatabase.getAvailableRooms().stream()
                 .filter(r -> r.getBeds() == bedCount && !r.isBooked())
                 .collect(Collectors.toList());
 
-        RoomListPanel listPanel = new RoomListPanel(filteredRooms, bedCount, view);
+        RoomListPanel listPanel = new RoomListPanel(filteredRooms, bedCount, guestName, view);
         view.setContentPane(listPanel);
         view.revalidate();
+    }
+
+    public HotelView getView() {
+        return view;
     }
 
 }
