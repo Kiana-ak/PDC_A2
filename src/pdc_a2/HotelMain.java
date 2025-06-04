@@ -4,6 +4,10 @@
  */
 package pdc_a2;
 
+import pdc_a2.controller.HotelController;
+import pdc_a2.controller.HotelModel;
+import pdc_a2.view.HotelView;
+
 /**
  *
  * @author 64210

@@ -4,6 +4,8 @@
  */
 package pdc_a2;
 
+import pdc_a2.model.Person;
+import pdc_a2.model.Room;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;

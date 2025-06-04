@@ -2,20 +2,24 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package pdc_a2;
+package pdc_a2.controller;
 
+import pdc_a2.view.HotelView;
+import pdc_a2.view.RoomCategoryPanel;
+import pdc_a2.view.RoomListPanel;
+import pdc_a2.model.RoomDatabase;
+import pdc_a2.model.Room;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  *
- * @author 64210 HotelModel connects to the database, filter rooms by bed count
+ * @author 64210 
+ * HotelModel connects to the database, filter rooms by bed count
  * stores selected booking data and notifies the view, HotelListener
  */
 public class HotelModel {
 
-    private HotelListener listener;
-    private HotelData data;
     private RoomDatabase roomDatabase;
     private HotelView view;
     private String guestName;
@@ -25,23 +29,11 @@ public class HotelModel {
     public HotelModel(HotelView view) {
         this.view = view;
         this.roomDatabase = new RoomDatabase();
-        this.data = new HotelData();
+        //this.data = new HotelData();
     }
 
     public String getGuestName() {
         return this.guestName;
-    }
-
-    // let the view listen for updates
-    public void setListener(HotelListener listener) {
-        this.listener = listener;
-    }
-
-    //tell the view model has updated data
-    private void notifyListener() {
-        if (listener != null) {
-            listener.hotelUpdate(this.data);
-        }
     }
 
     // show 1 to 3 beds options in panel

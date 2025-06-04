@@ -2,8 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package pdc_a2;
+package pdc_a2.controller;
 
+import pdc_a2.controller.HotelModel;
+import pdc_a2.view.HotelView;
+import pdc_a2.view.LoginPanel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;

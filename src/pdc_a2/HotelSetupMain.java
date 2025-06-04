@@ -4,6 +4,9 @@
  */
 package pdc_a2;
 
+import pdc_a2.model.HotelRoomManager;
+import pdc_a2.model.UserDatabase;
+
 /**
  *
  * @author 64210
@@ -14,7 +17,7 @@ public class HotelSetupMain {
         
         
         HotelRoomManager manager = new HotelRoomManager();
-        manager.setupHotelDB();    //crate rooms table     //create the HotelDB and ROOMS table
+        manager.setupHotelDB();      //create the HotelDB and ROOMS table
         manager.closeConnection();      //close the DB
         
         // user

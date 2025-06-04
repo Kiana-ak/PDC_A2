@@ -2,20 +2,20 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package pdc_a2;
+package pdc_a2.view;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Image;
+import pdc_a2.model.RoomDatabase;
+import pdc_a2.model.Customer;
+import pdc_a2.model.Person;
+import pdc_a2.model.Room;
+import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.JPanel;
+import pdc_a2.controller.HotelModel;
 
 /**
  *
@@ -105,20 +105,29 @@ public class RoomListPanel extends JPanel {
             int roomNumber = Integer.parseInt(selected.split(" ")[1]);
             String guestName = promptForGuestName(roomNumber);
 
-            if (guestName != null && !guestName.trim().isEmpty()) {
+            if (guestName != null) {
+                guestName = guestName.trim();
 
-                this.guestName = guestName.trim();
+                if (!isValidGuestName(guestName)) {
+                    JOptionPane.showMessageDialog(this, "Name must contain only letters and spaces.");
+                    return;
+                }
+
+                this.guestName = guestName;
                 Room bookedRoom = new Room(roomNumber, bedCount);
                 Person guest = new Customer(guestName);
 
                 updateDatabase(roomNumber, guestName);
                 showInvoicePreview(guest, bookedRoom);
                 refreshRoomList(guest.getName());
-            } else if (guestName == null || guestName.trim().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please enter a valid name to proceed.");
-                return;
+            } else {
+                JOptionPane.showMessageDialog(this, "Booking cancelled.");
             }
         }
+    }
+
+    public static boolean isValidGuestName(String name) {
+        return name != null && name.trim().matches("[a-zA-Z ]+");
     }
 
     //Asks the user to input their name to confirm booking

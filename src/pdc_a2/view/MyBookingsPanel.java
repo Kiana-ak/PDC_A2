@@ -2,22 +2,28 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package pdc_a2;
+package pdc_a2.view;
 
+import pdc_a2.model.RoomDatabase;
+import pdc_a2.model.Room;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import pdc_a2.controller.HotelModel;
 
 /**
  *
  * @author 64210
+ * Panel for guests to view and cancel their bookings.
+ * Displays a list of bookings with cancel buttons and a back option.
  */
 public class MyBookingsPanel extends JPanel {
     
     private String guestName;
     private HotelView view;
     private RoomDatabase roomDatabase;
-
+    
+    // constructor
     public MyBookingsPanel(String guestName, HotelView view) {
         this.guestName = guestName;
         this.view = view;
@@ -26,15 +32,20 @@ public class MyBookingsPanel extends JPanel {
         setLayout(new BorderLayout(20, 20));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setBackground(Color.WHITE);
-
-        JLabel title = new JLabel("My Bookings", SwingConstants.CENTER);
-        title.setFont(new Font("SansSerif", Font.BOLD, 20));
-        add(title, BorderLayout.NORTH);
-
+        
+        add(createTitleLabel(), BorderLayout.NORTH);
         add(createBookingList(), BorderLayout.CENTER);
         add(createBackButton(), BorderLayout.SOUTH);
     }
-
+    
+    // title label
+    private JLabel createTitleLabel() {
+        JLabel title = new JLabel("My Bookings", SwingConstants.CENTER);
+        title.setFont(new Font("SansSerif", Font.BOLD, 20));
+        return title;
+    }
+    
+    // returns current booking
     private JScrollPane createBookingList() {
         JPanel listPanel = new JPanel();
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));

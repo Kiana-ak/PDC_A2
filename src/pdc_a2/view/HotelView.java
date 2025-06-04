@@ -1,17 +1,16 @@
-package pdc_a2;
+package pdc_a2.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionListener;
 
 /**
  *
  * @author 64210
  */
-public class HotelView extends JFrame implements HotelListener {
+public class HotelView extends JFrame {
 
     private JButton viewRoomsButton;
     private JLabel backgroundLabel;
@@ -61,10 +60,4 @@ public class HotelView extends JFrame implements HotelListener {
         receptionistLoginButton.addActionListener(listener);
     }
 
-    // Called by the model when room info is ready
-    @Override
-    public void hotelUpdate(HotelData data) {
-        JOptionPane.showMessageDialog(this,
-                "You selected: " + data.beds + " bed(s), Room #" + data.roomNumber);
-    }
 }

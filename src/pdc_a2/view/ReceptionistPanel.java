@@ -2,18 +2,22 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package pdc_a2;
+package pdc_a2.view;
 
+import pdc_a2.model.RoomDatabase;
+import pdc_a2.model.Room;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
 /**
  *
- * @author 64210
+ * @author 
+ * displays all room bookings for receptionist
  */
 public class ReceptionistPanel extends JPanel {
-
+    
+    // constructor
     public ReceptionistPanel() {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -30,18 +34,21 @@ public class ReceptionistPanel extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
 
         JButton backButton = new JButton("Back to Main Menu");
+        
         backButton.addActionListener(e -> {
             HotelView view = new HotelView();
             view.setVisible(true);
             SwingUtilities.getWindowAncestor(this).dispose(); // close current frame
         });
+        
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(backButton);
         add(bottomPanel, BorderLayout.SOUTH);
 
         displayAllBookings(bookingsArea);
     }
-
+    
+    //show bookings for receptionist
     private void displayAllBookings(JTextArea area) {
         RoomDatabase db = new RoomDatabase();
         List<Room> allRooms = db.getAllRooms();
